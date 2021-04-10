@@ -1,4 +1,4 @@
-// Aplicação desenvolvida pela aluna Cintia Felix Mendonça RA:1780482111017
+// Aplicação desenvolvida pela aluna Cintia Felix Mendonça 
 
 # Getting Started with Create React App
 
