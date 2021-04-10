@@ -1,3 +1,5 @@
+// Aplicação desenvolvida pela aluna Cintia Felix Mendonça RA:1780482111017
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
