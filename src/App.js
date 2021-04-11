@@ -13,8 +13,11 @@ import Icon from "@material-ui/core/Icon";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import SwapVertIcon from '@material-ui/icons/SwapVert';
 import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import ContactMailIcon from '@material-ui/icons/ContactMail';
 
 function App() {
   const [valor, setValor] = useState(""); /* const é uma variável de valor fixo, somente para leitura, então vamos utilizar para ler a moeda que o user colocar */
@@ -71,16 +74,25 @@ function App() {
       </Navbar>
       <Jumbotron>
         <h1>
-          Olá! Bem-vindes ao nosso Conversor de Moedas <FaCoins />
+          Olá! Bem-vindo(a) ao conversor de moedas <FaCoins />
         </h1>
-        <p>Aqui você poderá converter real, dólar e euro!</p>
+        <p>Aqui você poderá fazer a conversão de moedas para real, dólar e euro!</p>
         <br></br>
         <Form>
+        {/* <FormControl fullWidth className={classes.margin}>
+          <InputLabel htmlFor="standard-adornment-amount">Amount</InputLabel>
+          <Input
+            id="standard-adornment-amount"
+            value={values.amount}
+            onChange={handleChange('amount')}
+            startAdornment={<InputAdornment position="start">$</InputAdornment>}
+          />
+        </FormControl> */}
           <Form.Label>Informe o valor a ser convertido</Form.Label>
           <FormControl
             type="text"
             value={valor}
-            placeholder="R$"
+            placeholder="$"
             onChange={(event) => setValor(event.target.value)}
           />
           <br></br>
@@ -89,10 +101,10 @@ function App() {
           <TextField
           id="standard-select-currency1"
           select
-          label="Select"
+          label=""
           value={tipoMoeda1}
           onChange={(event) => setTipo1Moeda(event.target.value)}
-          helperText="Please select your currency"
+          helperText="Por favor selecione a moeda atual"
         >
           {tiposMoedas.map((option) => ( /* .map, percorre o array de tipo de moedas e cria o menu de itens */
             <MenuItem key={option.value} value={option.value}>
@@ -100,19 +112,6 @@ function App() {
             </MenuItem>
           ))}
         </TextField>
-
-          {/* <Select
-          labelId="demo-simple-select-placeholder-label-label"
-          id="demo-simple-select-placeholder-label"
-          value={moeda1}
-          onChange={(event) => setMoeda1(event.target.value)}
-          displayEmpty
-          // className={classes.selectEmpty}
-        >
-          <MenuItem value={"BRL"}>Real</MenuItem>
-          <MenuItem value={"USD"}>Dólar</MenuItem>
-          <MenuItem value={"EUR"}>Euro</MenuItem>
-        </Select> */}
           <br></br>
           <br></br>
           <Button
@@ -125,28 +124,15 @@ function App() {
           </Button>
           <br></br>
           <br></br>
-          <Form.Label>Informe a moeda atual</Form.Label>
-          <br></br>
-          {/* <Select
-          labelId="demo-simple-select-placeholder-label-label"
-          id="demo-simple-select-placeholder-label"
-          value={moeda2}
-          onChange={(event) => setMoeda2(event.target.value)}
-          displayEmpty
-          // className={classes.selectEmpty}
-        >
-  
-          <MenuItem value={"BRL"}>Real</MenuItem>
-          <MenuItem value={"USD"}>Dólar</MenuItem>
-          <MenuItem value={"EUR"}>Euro</MenuItem>
-        </Select> */}
+          <Form.Label>Informe a moeda a ser convertida</Form.Label>
+          <br></br>          
         <TextField
           id="standard-select-currency1"
           select
-          label="Select"
+          label=""
           value={tipoMoeda2}
           onChange={(event) => setTipo2Moeda(event.target.value)}
-          helperText="Please select your currency"
+          helperText="Por favor selecione a moeda a ser convertida"
         >
           {tiposMoedas.map((option) => (
             <MenuItem key={option.value} value={option.value}>
@@ -165,12 +151,7 @@ function App() {
             CONVERTER
           </Button>
           <br></br>
-          <br></br>
-          <span>{`Última atualização: ${data}`}</span>
-          <br></br>
-        </Form>
-        <br></br>
-        <Row className="justify-content-center">
+          <br></br>                   
           <Card bg="info" className="text-center">
             <Card.Header>
               <h2>
@@ -181,9 +162,12 @@ function App() {
               </h2>
               <h3></h3>
             </Card.Header>
-          </Card>
-        </Row>
-      </Jumbotron>
+          </Card>   
+          <br></br>
+          <span>{`Última atualização: ${data}`}</span>  
+        </Form>                  
+      </Jumbotron>  
+      <footer>Aplicativo desenvolvido por Cintia Felix Mendonça <br></br> {<ContactMailIcon/>} cintiafelix1@gmail.com</footer>      
     </>
   );
 }

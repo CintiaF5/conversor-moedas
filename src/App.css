@@ -8,3 +8,14 @@
 .Navbar.Brand{
     font-family:'Montserrat:wgh', sans-serif;
 }
+
+footer{
+    background: #DCDCDC;
+    font-size: 15px;
+    width: 100%;
+    height: 50px;
+    right: auto;
+    left: auto;
+    text-align: center;
+    }
+
