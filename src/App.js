@@ -6,168 +6,165 @@ import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import { FaCoins } from "react-icons/fa";
 import Card from "react-bootstrap/Card";
-import Row from "react-bootstrap/Row";
 import "./App.css";
 import Button from "@material-ui/core/Button";
-import Icon from "@material-ui/core/Icon";
-import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
-import SwapVertIcon from '@material-ui/icons/SwapVert';
-import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import ContactMailIcon from '@material-ui/icons/ContactMail';
+import SwapVertIcon from "@material-ui/icons/SwapVert";
+import MenuItem from "@material-ui/core/MenuItem";
+import TextField from "@material-ui/core/TextField";
+import ContactMailIcon from "@material-ui/icons/ContactMail";
 
 function App() {
-  const [valor, setValor] = useState(""); /* const é uma variável de valor fixo, somente para leitura, então vamos utilizar para ler a moeda que o user colocar */
+  /* const é uma variável de valor fixo, somente para leitura, então vamos utilizar para ler a moeda que o user colocar */
+  const [valor, setValor] = useState("1");
+
   const [resultado, setResultado] = useState("");
-  const [tipoMoeda1, setTipo1Moeda] = useState("BRL"); /* inicia a lista de moeda com real */
-  const [tipoMoeda2, setTipo2Moeda] = useState("USD"); /* inicia a lista de moeda2 com dólar */
-  const tiposMoedas = [{
-    value: 'USD',
-    label: '$ Dólar',
-  },
-  {
-    value: 'EUR',
-    label: '€ Euro',
-  },
-  {
-    value: 'BRL',
-    label: 'R$ Real',
-  }]
-  
-  const data = new Date(); /* new date para atualizar o site em tempo real */
 
-  // useEffect(() => { /* useEffect esta sendo utilizado para não precisar do botão de conversão, pois assim que o user digita o valor ele já trás o resultado */
-  //   converter()
-  // })
+  /* inicia a lista de moeda com real */
+  const [tipoMoeda1, setTipo1Moeda] = useState("BRL");
 
-  async function converter() {
+  /* inicia a lista de moeda2 com dólar */
+  const [tipoMoeda2, setTipo2Moeda] = useState("USD");
+
+  const tiposMoedas = [ /* tipos de moedas disponíveis para conversão */
+    {
+      value: "USD",
+      label: "$ Dólar",
+    },
+    {
+      value: "EUR",
+      label: "€ Euro",
+    },
+    {
+      value: "BRL",
+      label: "R$ Real",
+    },
+  ];
+
+  /* new date para atualizar o site em tempo real */
+  const data = new Date();
+
+   /* useEffect realiza a conversão a partir de qualquer alteração de estado de um componente */
+  useEffect(() => {
+    converter()
+  })
+
+  async function converter() { /* realiza requisição para a API */
     let url = `https://economia.awesomeapi.com.br/${tipoMoeda1}-${tipoMoeda2}/1`;
-    if(tipoMoeda1 !== tipoMoeda2){
-    fetch(url) /* fetch busca os dados na URL */
-      .then((response) => response.json())
-      .then((data) => {
-        data = data[0]; /* guardar o resultado de retorno da API */
-        console.log(data);
-        setResultado(valor * data.high);
-      });
-    } else{
-      setResultado(valor)
+    
+    
+    const valorCalc = valor.replace(",", ".") /* utizado para converter vígula para ponto */
+    if (valorCalc === "" || !Number(valorCalc) || valorCalc < 0){ /* validação para não funcionar com números negativos ou texto, somente funciona com não negativos */
+      return;
+    }
+
+    if (tipoMoeda1 !== tipoMoeda2) { /* verifica se a conversão esta sendo feita para a mesma moeda, retornando assim o próprio valor caso ocorra */
+      fetch(url) /* fetch busca os dados na URL */
+        .then((response) => response.json())
+        .then((data) => {
+          data = data[0]; /* guardar o resultado de retorno da API */
+          setResultado(valorCalc * data.high);
+        });
+    } else {
+      setResultado(valorCalc);
     }
   }
 
-  function inverter(){
+  function inverter() { /* utilizado para trocar os campos de moedas */
     const aux = tipoMoeda1;
-    setTipo1Moeda(tipoMoeda2)
-    setTipo2Moeda(aux)
+    setTipo1Moeda(tipoMoeda2);
+    setTipo2Moeda(aux);
   }
 
-  return (
+  return ( /* tudo o que será mostrado */
     <>
       {/* React Fragment */}
       <Navbar bg="info">
         {" "}
         {/* Navbar = barra de navegação */}
-        <Navbar.Brand href="#inicio">Conversor de Moedas</Navbar.Brand>
+        <Navbar.Brand>Conversor de Moedas</Navbar.Brand>
       </Navbar>
       <Jumbotron>
         <h1>
           Olá! Bem-vindo(a) ao conversor de moedas <FaCoins />
         </h1>
-        <p>Aqui você poderá fazer a conversão de moedas para real, dólar e euro!</p>
+        <p>
+          Aqui você poderá fazer a conversão de moedas para real, dólar e euro!
+        </p>
         <br></br>
         <Form>
-        {/* <FormControl fullWidth className={classes.margin}>
-          <InputLabel htmlFor="standard-adornment-amount">Amount</InputLabel>
-          <Input
-            id="standard-adornment-amount"
-            value={values.amount}
-            onChange={handleChange('amount')}
-            startAdornment={<InputAdornment position="start">$</InputAdornment>}
-          />
-        </FormControl> */}
           <Form.Label>Informe o valor a ser convertido</Form.Label>
-          <FormControl
-            type="text"
+          <FormControl /* local que o user vai digitar */
+            type="text" 
             value={valor}
             placeholder="$"
-            onChange={(event) => setValor(event.target.value)}
+            onChange={(event) => setValor(event.target.value)} /* onChange para quando a digitação, guarda o valor digitado */
           />
           <br></br>
           <Form.Label>Informe a moeda atual</Form.Label>
           <br></br>
-          <TextField
-          id="standard-select-currency1"
-          select
-          label=""
-          value={tipoMoeda1}
-          onChange={(event) => setTipo1Moeda(event.target.value)}
-          helperText="Por favor selecione a moeda atual"
-        >
-          {tiposMoedas.map((option) => ( /* .map, percorre o array de tipo de moedas e cria o menu de itens */
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField>
+          <TextField /* lista de moedas */
+            id="standard-select-currency1"
+            select
+            label=""
+            value={tipoMoeda1}
+            onChange={(event) => setTipo1Moeda(event.target.value)}
+            helperText="Por favor selecione a moeda atual"
+          >
+            {tiposMoedas.map((
+              option /* .map, percorre o array de tipo de moedas e cria o menu de itens */
+            ) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
           <br></br>
           <br></br>
-          <Button
+          <Button /* botão para inverter o tipo de moeda selecionado */
             variant="contained"
             color="primary"
             startIcon={<SwapVertIcon />}
-            onClick={() => inverter()}        
+            onClick={() => inverter()}
           >
             INVERTER
           </Button>
           <br></br>
           <br></br>
           <Form.Label>Informe a moeda a ser convertida</Form.Label>
-          <br></br>          
-        <TextField
-          id="standard-select-currency1"
-          select
-          label=""
-          value={tipoMoeda2}
-          onChange={(event) => setTipo2Moeda(event.target.value)}
-          helperText="Por favor selecione a moeda a ser convertida"
-        >
-          {tiposMoedas.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </TextField>
           <br></br>
-          <br></br>
-          <Button
-            variant="contained"
-            color="primary"
-            endIcon={<AttachMoneyIcon />}
-            onClick={() => converter()}
+          <TextField
+            id="standard-select-currency1"
+            select
+            label=""
+            value={tipoMoeda2}
+            onChange={(event) => setTipo2Moeda(event.target.value)}
+            helperText="Por favor selecione a moeda a ser convertida"
           >
-            CONVERTER
-          </Button>
-          <br></br>
-          <br></br>                   
-          <Card bg="info" className="text-center">
+            {tiposMoedas.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <br></br>                 
+          <Card bg="info" className="text-center"> {/* card esta sendo utilizado para mostrar o resultado */}
             <Card.Header>
               <h2>
                 {resultado.toLocaleString("pt-br", {
                   style: "currency",
-                  currency: "BRL",
+                  currency: tipoMoeda2,
                 })}
               </h2>
-              <h3></h3>
             </Card.Header>
-          </Card>   
+          </Card>
           <br></br>
-          <span>{`Última atualização: ${data}`}</span>  
-        </Form>                  
-      </Jumbotron>  
-      <footer>Aplicativo desenvolvido por Cintia Felix Mendonça <br></br> {<ContactMailIcon/>} cintiafelix1@gmail.com</footer>      
+          <span>{`Última atualização: ${data}`}</span>
+        </Form>
+      </Jumbotron>
+      <footer> {/* rodapé */}
+        Aplicativo desenvolvido por Cintia Felix Mendonça <br></br>{" "}
+        {<ContactMailIcon />} cintiafelix1@gmail.com
+      </footer>
     </>
   );
 }
