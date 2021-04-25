@@ -15,7 +15,7 @@ import ContactMailIcon from "@material-ui/icons/ContactMail";
 
 function App() {
   /* const é uma variável de valor fixo, somente para leitura, então vamos utilizar para ler a moeda que o user colocar */
-  const [valor, setValor] = useState("1");
+  const [valor, setValor] = useState("");
 
   const [resultado, setResultado] = useState("");
 
@@ -25,7 +25,11 @@ function App() {
   /* inicia a lista de moeda2 com dólar */
   const [tipoMoeda2, setTipo2Moeda] = useState("USD");
 
-  const tiposMoedas = [ /* tipos de moedas disponíveis para conversão */
+  /* new date para atualizar o site em tempo real */
+  const [data, setData] = useState(new Date());
+
+  const tiposMoedas = [
+    /* tipos de moedas disponíveis para conversão */
     {
       value: "USD",
       label: "$ Dólar",
@@ -40,42 +44,53 @@ function App() {
     },
   ];
 
-  /* new date para atualizar o site em tempo real */
-  const data = new Date();
-
-   /* useEffect realiza a conversão a partir de qualquer alteração de estado de um componente */
+  /* useEffect realiza a conversão a partir de qualquer alteração de estado de um componente */
   useEffect(() => {
-    converter()
-  })
+    converter();
+    document.title = `Conversor de moedas`;
+  });
 
-  async function converter() { /* realiza requisição para a API */
-    let url = `https://economia.awesomeapi.com.br/${tipoMoeda1}-${tipoMoeda2}/1`;
-    
-    
-    const valorCalc = valor.replace(",", ".") /* utizado para converter vígula para ponto */
-    if (valorCalc === "" || !Number(valorCalc) || valorCalc < 0){ /* validação para não funcionar com números negativos ou texto, somente funciona com não negativos */
+  async function converter() {
+    /* realiza requisição para a API */
+    const url = `https://economia.awesomeapi.com.br/${tipoMoeda1}-${tipoMoeda2}/1`;
+
+    const valorCalc = valor.replace(",", "." ); /* utilizado para converter vígula para ponto */
+
+    if (valorCalc === ""){
+      setResultado(0);
       return;
     }
 
-    if (tipoMoeda1 !== tipoMoeda2) { /* verifica se a conversão esta sendo feita para a mesma moeda, retornando assim o próprio valor caso ocorra */
+    if (isNaN(valorCalc) || valorCalc < 0) {
+      /* validação para não funcionar com números negativos ou texto, somente funciona com não negativos */
+      alert("Ops! Valores inválidos, por favor digite novamente");
+      setValor("");
+      return;
+    }
+
+    if (tipoMoeda1 !== tipoMoeda2) {
+      /* verifica se a conversão esta sendo feita para a mesma moeda, retornando assim o próprio valor caso ocorra */
       fetch(url) /* fetch busca os dados na URL */
         .then((response) => response.json())
         .then((data) => {
           data = data[0]; /* guardar o resultado de retorno da API */
           setResultado(valorCalc * data.high);
+          setData(data.create_date);
         });
     } else {
       setResultado(valorCalc);
     }
   }
 
-  function inverter() { /* utilizado para trocar os campos de moedas */
+  function inverter() {
+    /* utilizado para trocar os campos de moedas */
     const aux = tipoMoeda1;
     setTipo1Moeda(tipoMoeda2);
     setTipo2Moeda(aux);
   }
 
-  return ( /* tudo o que será mostrado */
+  return (
+    /* tudo o que será mostrado */
     <>
       {/* React Fragment */}
       <Navbar bg="info">
@@ -88,16 +103,18 @@ function App() {
           Olá! Bem-vindo(a) ao conversor de moedas <FaCoins />
         </h1>
         <p>
-          Aqui você poderá fazer a conversão de moedas para real, dólar e euro!
+          Aqui você poderá fazer a conversão de moedas para Real, Dólar e Euro!
         </p>
         <br></br>
         <Form>
           <Form.Label>Informe o valor a ser convertido</Form.Label>
           <FormControl /* local que o user vai digitar */
-            type="text" 
+            type="text"
             value={valor}
             placeholder="$"
-            onChange={(event) => setValor(event.target.value)} /* onChange para quando a digitação, guarda o valor digitado */
+            onChange={(event) =>
+              setValor(event.target.value)
+            } /* onChange para quando a digitação, guarda o valor digitado */
           />
           <br></br>
           <Form.Label>Informe a moeda atual</Form.Label>
@@ -146,8 +163,10 @@ function App() {
               </MenuItem>
             ))}
           </TextField>
-          <br></br>                 
-          <Card bg="info" className="text-center"> {/* card esta sendo utilizado para mostrar o resultado */}
+          <br></br>
+          <Card bg="info" className="text-center">
+            {" "}
+            {/* card esta sendo utilizado para mostrar o resultado */}
             <Card.Header>
               <h2>
                 {resultado.toLocaleString("pt-br", {
@@ -161,7 +180,9 @@ function App() {
           <span>{`Última atualização: ${data}`}</span>
         </Form>
       </Jumbotron>
-      <footer> {/* rodapé */}
+      <footer>
+        {" "}
+        {/* rodapé */}
         Aplicativo desenvolvido por Cintia Felix Mendonça <br></br>{" "}
         {<ContactMailIcon />} cintiafelix1@gmail.com
       </footer>
